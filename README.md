@@ -4,7 +4,7 @@ Inspired by [Mario Fusco's](https://twitter.com/mariofusco) attempt
 ([github repo](https://github.com/mariofusco/from-gof-to-lambda))
 to describe the canonical implementation of design patterns from the
 [Gang of Four](https://en.wikipedia.org/wiki/Design_Patterns) book to 
-a more functional-programming approach, using lambdas.
+a more functional-programming approach.
 
 This is my own personal take to practice getting more comfortable composing
 functions when it feels more natural than the class-oriented way of things.

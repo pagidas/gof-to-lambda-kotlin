@@ -18,7 +18,7 @@ and another with the functional approach. Both of the takes model
 the same problem but solve it differently. There is a simple `main`
 for each file that roughly tests each approach in isolation.
 
-Currently, we only include the **_Strategy pattern_**.
+Currently, we only include  **_Strategy_** and **_Visitor_** patterns.
 
 _More to come..._ :slightly_smiling_face:
 

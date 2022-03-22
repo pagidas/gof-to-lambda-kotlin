@@ -7,7 +7,7 @@ to describe the canonical implementation of design patterns from the
 a more functional-programming approach.
 
 This is my own personal take to practice getting more comfortable composing
-functions when it feels more natural than the class-oriented way of things.
+functions when it feels more natural than the class-oriented, traditional way.
 
 This exercise is using [Kotlin](https://kotlinlang.org/) which supports a lot
 of properties from both OOP and FP paradigms.

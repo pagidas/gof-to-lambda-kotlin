@@ -22,3 +22,44 @@ Currently, we only include  **_Strategy_** and **_Visitor_** patterns.
 
 _More to come..._ :slightly_smiling_face:
 
+## Overview
+| Pattern               |        Kotlin (functional approach)        |
+|-----------------------|:------------------------------------------:|
+| [Strategy](#Strategy) |          functions + `typealias`           |
+| [Visitor](#Visitor)   | pattern matching + `when` + `sealed` types |
+
+### Strategy
+All the different implementors of a strategy interface are essentially just functions.
+So the context relies on a specific function definition, that at runtime, different
+functions are executed.
+
+Compare to Java, Kotlin offers functions as types in a very intuitive way.
+You have to use the following notation:
+```kotlin
+(SomeType) -> SomeOtherType
+```
+Above is a function that reads as, accepts a parameter of type `SomeType` and returns `SomeOtherType`.
+More importantly, some context that may require a function defined as above would look like:
+```kotlin
+fun ctx(f: (SomeType) -> SomeOtherType) {
+    // implementation detail...
+}
+```
+The above example is also referred to as **_higher order functions_**, which is about functions
+that accept functions as arguments, or return other functions. Simply, it's about function composition.
+
+Instead of relying on the generic way of defining a function type, we can use Kotlin's `typealias` feature,
+to give a name to a particular function so that we know the context of this calculation.
+
+For example:
+```kotlin
+typealias Discount = (Long) -> Long
+
+fun ctx(f: Discount): Long {
+    // implementation detail...
+}
+```
+Kotlin's `typealias` feature, does not create a new type, it is equivalent to the corresponding underlying
+type.
+
+

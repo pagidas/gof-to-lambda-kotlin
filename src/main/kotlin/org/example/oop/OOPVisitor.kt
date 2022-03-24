@@ -4,12 +4,12 @@ import java.math.BigDecimal
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
-private data class Liquor(val price: Long): Visitable {
+private data class Liquor(val pricePerUnit: Long): Visitable {
     override fun <T> accept(visitor: Visitor<T>): T {
         return visitor.visit(this)
     }
 }
-private data class Tobacco(val price: Long): Visitable {
+private data class Tobacco(val pricePerWeight: Long): Visitable {
     override fun <T> accept(visitor: Visitor<T>): T {
         return visitor.visit(this)
     }
@@ -26,11 +26,11 @@ private interface Visitable {
 
 private class NetPriceVisitor: Visitor<Long> {
     override fun visit(liquor: Liquor): Long {
-        return liquor.price
+        return liquor.pricePerUnit
     }
 
     override fun visit(tobacco: Tobacco): Long {
-        return tobacco.price
+        return tobacco.pricePerWeight
     }
 }
 
@@ -38,7 +38,7 @@ private class VATVisitor(private val standardRate: Int, private val otherRates: 
     override fun visit(liquor: Liquor): Long {
         val rate = otherRates[liquor::class] ?: standardRate
 
-        return BigDecimal(liquor.price)
+        return BigDecimal(liquor.pricePerUnit)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
             .setScale(0)
             .toLong()
@@ -47,7 +47,7 @@ private class VATVisitor(private val standardRate: Int, private val otherRates: 
     override fun visit(tobacco: Tobacco): Long {
         val rate = otherRates[tobacco::class] ?: standardRate
 
-        return BigDecimal(tobacco.price)
+        return BigDecimal(tobacco.pricePerWeight)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
             .setScale(0)
             .toLong()

@@ -6,6 +6,7 @@ import kotlin.test.assertEquals
 
 private data class Liquor(val pricePerUnit: Long): Goods
 private data class Tobacco(val pricePerWeight: Long): Goods
+private data class Rates(val standard: Int, val overrides: Map<KClass<out Goods>, Int>)
 
 private sealed interface Goods
 
@@ -14,8 +15,8 @@ private fun netPrice(goods: Goods): Long =
         is Liquor -> goods.pricePerUnit
         is Tobacco -> goods.pricePerWeight
     }
-private fun vat(goods: Goods, standardRate: Int, otherRates: Map<KClass<out Goods>, Int>): Long {
-    val rate = otherRates[goods::class] ?: standardRate
+private fun vat(goods: Goods, rates: Rates): Long {
+    val rate = rates.overrides[goods::class] ?: rates.standard
 
     return when (goods) {
         is Liquor -> BigDecimal(goods.pricePerUnit)
@@ -28,24 +29,22 @@ private fun vat(goods: Goods, standardRate: Int, otherRates: Map<KClass<out Good
             .toLong()
     }
 }
-private fun grossPrice(goods: Goods, standardRate: Int, otherRates: Map<KClass<out Goods>, Int>): Long =
-    netPrice(goods) + vat(goods, standardRate, otherRates)
+private fun grossPrice(goods: Goods, rates: Rates): Long =
+    netPrice(goods) + vat(goods, rates)
 
 fun main() {
-    val standardRate = 20
-    val otherRates: Map<KClass<out Goods>, Int> = mapOf(Tobacco::class to 25)
-
+    val rates = Rates(20, mapOf(Tobacco::class to 25))
     val liquor: Goods = Liquor(35000)
     val tobacco: Goods = Tobacco(5500)
 
     println("running FP visitor pattern..")
     assertEquals(35000L, netPrice(liquor))
-    assertEquals(7000L, vat(liquor, standardRate, otherRates))
-    assertEquals(42000L, grossPrice(liquor, standardRate, otherRates))
+    assertEquals(7000L, vat(liquor, rates))
+    assertEquals(42000L, grossPrice(liquor, rates))
 
     assertEquals(5500L, netPrice(tobacco))
-    assertEquals(1375L, vat(tobacco, standardRate, otherRates))
-    assertEquals(6875L, grossPrice(tobacco, standardRate, otherRates))
+    assertEquals(1375L, vat(tobacco, rates))
+    assertEquals(6875L, grossPrice(tobacco, rates))
     println("tests passed!")
 }
 

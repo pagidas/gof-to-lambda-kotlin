@@ -14,6 +14,7 @@ private data class Tobacco(val pricePerWeight: Long): Visitable {
         return visitor.visit(this)
     }
 }
+private data class Rates(val standard: Int, val overrides: Map<KClass<out Visitable>, Int>)
 
 private interface Visitor<T> {
     fun visit(liquor: Liquor): T
@@ -34,9 +35,9 @@ private class NetPriceVisitor: Visitor<Long> {
     }
 }
 
-private class VATVisitor(private val standardRate: Int, private val otherRates: Map<KClass<out Visitable>, Int>): Visitor<Long> {
+private class VATVisitor(private val rates: Rates): Visitor<Long> {
     override fun visit(liquor: Liquor): Long {
-        val rate = otherRates[liquor::class] ?: standardRate
+        val rate = rates.overrides[liquor::class] ?: rates.standard
 
         return BigDecimal(liquor.pricePerUnit)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
@@ -45,7 +46,7 @@ private class VATVisitor(private val standardRate: Int, private val otherRates: 
     }
 
     override fun visit(tobacco: Tobacco): Long {
-        val rate = otherRates[tobacco::class] ?: standardRate
+        val rate = rates.overrides[tobacco::class] ?: rates.standard
 
         return BigDecimal(tobacco.pricePerWeight)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
@@ -54,9 +55,9 @@ private class VATVisitor(private val standardRate: Int, private val otherRates: 
     }
 }
 
-private class GrossPriceVisitor(standardRate: Int, otherRates: Map<KClass<out Visitable>, Int>): Visitor<Long> {
+private class GrossPriceVisitor(rates: Rates): Visitor<Long> {
     private val netPrice: NetPriceVisitor = NetPriceVisitor()
-    private val vat: VATVisitor = VATVisitor(standardRate, otherRates)
+    private val vat: VATVisitor = VATVisitor(rates)
 
     override fun visit(liquor: Liquor): Long {
         return liquor.accept(netPrice) + liquor.accept(vat)
@@ -68,12 +69,11 @@ private class GrossPriceVisitor(standardRate: Int, otherRates: Map<KClass<out Vi
 }
 
 fun main() {
-    val standardRate = 20
-    val otherRates: Map<KClass<out Visitable>, Int> = mapOf(Tobacco::class to 25)
+    val rates = Rates(20, mapOf(Tobacco::class to 25))
 
     val netPrice = NetPriceVisitor()
-    val vat = VATVisitor(standardRate, otherRates)
-    val grossPrice = GrossPriceVisitor(standardRate, otherRates)
+    val vat = VATVisitor(rates)
+    val grossPrice = GrossPriceVisitor(rates)
 
     val liquor: Visitable = Liquor(35000)
     val tobacco: Visitable = Tobacco(5500)

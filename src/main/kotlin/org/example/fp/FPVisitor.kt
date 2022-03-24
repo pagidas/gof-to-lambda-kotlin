@@ -4,35 +4,32 @@ import java.math.BigDecimal
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
-private data class Liquor(val price: Long): Goods
-private data class Tobacco(val price: Long): Goods
+private data class Liquor(val pricePerUnit: Long): Goods
+private data class Tobacco(val pricePerWeight: Long): Goods
 
 private sealed interface Goods
 
 private fun netPrice(goods: Goods): Long =
     when (goods) {
-        is Liquor -> goods.price
-        is Tobacco -> goods.price
+        is Liquor -> goods.pricePerUnit
+        is Tobacco -> goods.pricePerWeight
     }
 private fun vat(goods: Goods, standardRate: Int, otherRates: Map<KClass<out Goods>, Int>): Long {
     val rate = otherRates[goods::class] ?: standardRate
 
     return when (goods) {
-        is Liquor -> BigDecimal(goods.price)
+        is Liquor -> BigDecimal(goods.pricePerUnit)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
             .setScale(0)
             .toLong()
-        is Tobacco -> BigDecimal(goods.price)
+        is Tobacco -> BigDecimal(goods.pricePerWeight)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
             .setScale(0)
             .toLong()
     }
 }
 private fun grossPrice(goods: Goods, standardRate: Int, otherRates: Map<KClass<out Goods>, Int>): Long =
-    when (goods) {
-        is Liquor -> netPrice(goods) + vat(goods, standardRate, otherRates)
-        is Tobacco -> netPrice(goods) + vat(goods, standardRate, otherRates)
-    }
+    netPrice(goods) + vat(goods, standardRate, otherRates)
 
 fun main() {
     val standardRate = 20

@@ -29,8 +29,7 @@ private fun vat(goods: Goods, rates: Rates): Long {
             .toLong()
     }
 }
-private fun grossPrice(goods: Goods, rates: Rates): Long =
-    netPrice(goods) + vat(goods, rates)
+private fun grossPrice(goods: Goods, rates: Rates): Long = netPrice(goods) + vat(goods, rates)
 
 fun main() {
     val rates = Rates(20, mapOf(Tobacco::class to 25))

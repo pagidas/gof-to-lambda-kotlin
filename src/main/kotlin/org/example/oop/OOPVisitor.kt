@@ -14,7 +14,7 @@ private data class Tobacco(val pricePerWeight: Long): Visitable {
         return visitor.visit(this)
     }
 }
-private data class Rates(val standard: Int, val overrides: Map<KClass<out Visitable>, Int>)
+private data class VatRate(val standard: Int, val overrides: Map<KClass<out Visitable>, Int>)
 
 private interface Visitor<T> {
     fun visit(liquor: Liquor): T
@@ -35,9 +35,9 @@ private class NetPriceVisitor: Visitor<Long> {
     }
 }
 
-private class VATVisitor(private val rates: Rates): Visitor<Long> {
+private class VATVisitor(private val vatRate: VatRate): Visitor<Long> {
     override fun visit(liquor: Liquor): Long {
-        val rate = rates.overrides[liquor::class] ?: rates.standard
+        val rate = vatRate.overrides[liquor::class] ?: vatRate.standard
 
         return BigDecimal(liquor.pricePerUnit)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
@@ -46,7 +46,7 @@ private class VATVisitor(private val rates: Rates): Visitor<Long> {
     }
 
     override fun visit(tobacco: Tobacco): Long {
-        val rate = rates.overrides[tobacco::class] ?: rates.standard
+        val rate = vatRate.overrides[tobacco::class] ?: vatRate.standard
 
         return BigDecimal(tobacco.pricePerWeight)
             .multiply(BigDecimal(rate).divide(BigDecimal(100)))
@@ -55,9 +55,9 @@ private class VATVisitor(private val rates: Rates): Visitor<Long> {
     }
 }
 
-private class GrossPriceVisitor(rates: Rates): Visitor<Long> {
+private class GrossPriceVisitor(vatRate: VatRate): Visitor<Long> {
     private val netPrice: NetPriceVisitor = NetPriceVisitor()
-    private val vat: VATVisitor = VATVisitor(rates)
+    private val vat: VATVisitor = VATVisitor(vatRate)
 
     override fun visit(liquor: Liquor): Long {
         return liquor.accept(netPrice) + liquor.accept(vat)
@@ -69,11 +69,11 @@ private class GrossPriceVisitor(rates: Rates): Visitor<Long> {
 }
 
 fun main() {
-    val rates = Rates(20, mapOf(Tobacco::class to 25))
+    val vatRate = VatRate(20, mapOf(Tobacco::class to 25))
 
     val netPrice = NetPriceVisitor()
-    val vat = VATVisitor(rates)
-    val grossPrice = GrossPriceVisitor(rates)
+    val vat = VATVisitor(vatRate)
+    val grossPrice = GrossPriceVisitor(vatRate)
 
     val liquor: Visitable = Liquor(35000)
     val tobacco: Visitable = Tobacco(5500)

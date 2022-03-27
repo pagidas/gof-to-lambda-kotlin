@@ -1,14 +1,16 @@
 package org.example.fp
 
+import org.example.fp.ProductType.Liquor
+import org.example.fp.ProductType.Tobacco
 import java.math.BigDecimal
 import kotlin.reflect.KClass
 import kotlin.test.assertEquals
 
-private data class Liquor(val pricePerUnit: Long): ProductType
-private data class Tobacco(val pricePerWeight: Long): ProductType
+private sealed interface ProductType {
+    data class Liquor(val pricePerUnit: Long): ProductType
+    data class Tobacco(val pricePerWeight: Long): ProductType
+}
 private data class VatRate(val standard: Int, val overrides: Map<KClass<out ProductType>, Int>)
-
-private sealed interface ProductType
 
 private fun netPrice(product: ProductType): Long =
     when (product) {

@@ -62,4 +62,30 @@ fun ctx(f: Discount): Long {
 Kotlin's `typealias` feature, does not create a new type, it is equivalent to the corresponding underlying
 type.
 
+### Visitor
+To apply different operations into a family of types, first we have to group them. We're doing so introducing
+a sum type of the algebraic data types, which simply means that a `MyType` is either `A`, `B`, or `C`. In Java,
+the closest thing to a sum type ADT is the `enum`. In Kotlin we can use the `sealed` feature which offers all
+subtypes of that sealed type are known at compile time.
+```kotlin
+sealed interface MyType {
+    object A: MyTpe
+    object B: MyType
+    object C: MyType
+}
+```
+
+Again, all the different operations are just functions acting on the sum type (or supertype). Since, in the functional
+approach we cannot use **_dynamic dispatch_** because we have decoupled behaviour from data, we must use 
+**_pattern matching_** on the supertype. The closest thing of pattern matching in Kotlin is using the `when` construct 
+on the sealed type.
+```kotlin
+fun ctx(type: MyType): Unit {
+    when(type) {
+        is A -> println("type A!")
+        is B -> println("type B!")
+        is C -> println("type C!")
+    }
+}
+```
 

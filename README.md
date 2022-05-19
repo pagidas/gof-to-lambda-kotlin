@@ -70,8 +70,8 @@ subtypes of that sealed type are known at compile time.
 ```kotlin
 sealed interface MyType {
     object A: MyTpe
-    object B: MyType
-    object C: MyType
+    data class B(val x: Any, val y: Any): MyType
+    data class C(val z: Any): MyType
 }
 ```
 
@@ -82,9 +82,9 @@ on the sealed type.
 ```kotlin
 fun ctx(type: MyType): Unit {
     when(type) {
-        is A -> println("type A!")
-        is B -> println("type B!")
-        is C -> println("type C!")
+        is A -> println("A")
+        is B -> println("B.x=${type.x}, B.y=${type.y}")
+        is C -> println("C.z=${type.z}")
     }
 }
 ```

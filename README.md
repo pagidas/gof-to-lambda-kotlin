@@ -29,9 +29,8 @@ _More to come..._ :slightly_smiling_face:
 | [Visitor](#Visitor)   | pattern matching + `when` + `sealed` types |
 
 ### Strategy
-All the different implementors of a strategy interface are essentially just functions.
-So the context relies on a specific function definition, that at runtime, different
-functions are executed.
+We can treat a function as an `interface`, transparently swapping different implementations
+as long as the signatures are the same.
 
 Compare to Java, Kotlin offers functions as types in a very intuitive way.
 You have to use the following notation:

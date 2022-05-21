@@ -18,15 +18,16 @@ and another with the functional approach. Both of the takes model
 the same problem but solve it differently. There is a simple `main`
 for each file that roughly tests each approach in isolation.
 
-Currently, we only include  **_Strategy_** and **_Visitor_** patterns.
+Currently, we only include  **_Strategy_**, **_Visitor_** and **_Decorator_** patterns.
 
 _More to come..._ :slightly_smiling_face:
 
 ## Overview
-| Pattern               |        Kotlin (functional approach)        |
-|-----------------------|:------------------------------------------:|
-| [Strategy](#Strategy) |          functions + `typealias`           |
-| [Visitor](#Visitor)   | pattern matching + `when` + `sealed` types |
+| Pattern                 |        Kotlin (functional approach)        |
+|-------------------------|:------------------------------------------:|
+| [Strategy](#Strategy)   |          functions + `typealias`           |
+| [Visitor](#Visitor)     | pattern matching + `when` + `sealed` types |
+| [Decorator](#Decorator) |                 functions                  |
 
 ### Strategy
 We can treat a function as an `interface`, transparently swapping different implementations
@@ -87,4 +88,13 @@ fun ctx(type: MyType): Unit {
     }
 }
 ```
+
+### Decorator
+Similar to [Visitor](#Visitor), we can treat a function as an `interface`. Just as the canonical GoF implementation,
+we define another function, wrapping the delegate, which returns the target operation but "decorated". Yet another
+example of **_higher order functions_**.
+
+With **_partial application_**, we can bind the target delegate to the wrapper function, defining the decorated
+operation beforehand. This will make things simpler, as you would use the decorated function the same way you would use
+the undecorated one.
 

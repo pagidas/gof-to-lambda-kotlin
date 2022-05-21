@@ -90,7 +90,7 @@ fun ctx(type: MyType): Unit {
 ```
 
 ### Decorator
-Similar to [Visitor](#Visitor), we can treat a function as an `interface`. Just as the canonical GoF implementation,
+Similar to the **_Visitor_**, we can treat a function as an `interface`. Just as the canonical GoF implementation,
 we define another function, wrapping the delegate, which returns the target operation but "decorated". Yet another
 example of **_higher order functions_**.
 

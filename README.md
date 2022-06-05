@@ -94,7 +94,7 @@ Similar to the **_Visitor_**, we can treat a function as an `interface`. Just as
 we define another function, wrapping the delegate, which returns the target operation but "decorated". Yet another
 example of **_higher order functions_**.
 
-With **_currying_**, we can pass the target delegate to the wrapper function as its first argument, defining the decorated
+With **_partial application_**, we can pass the target delegate to the wrapper function as its first argument, defining the decorated
 operation beforehand. This will make things simpler, as you would use the decorated function the same way you would use
 the undecorated one.
 

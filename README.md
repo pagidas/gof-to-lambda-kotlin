@@ -36,12 +36,12 @@ as long as the signatures are the same.
 Compare to Java, Kotlin offers functions as types in a very intuitive way.
 You have to use the following notation:
 ```kotlin
-(SomeType) -> SomeOtherType
+(String) -> Int
 ```
 Above is a function that reads as, accepts a parameter of type `SomeType` and returns `SomeOtherType`.
 More importantly, some context that may require a function defined as above would look like:
 ```kotlin
-fun ctx(f: (SomeType) -> SomeOtherType) {
+fun ctx(f: (String) -> Int): Int {
     // implementation detail...
 }
 ```
@@ -80,12 +80,10 @@ approach we cannot use **_dynamic dispatch_** because we have decoupled behaviou
 **_pattern matching_** on the supertype. The closest thing of pattern matching in Kotlin is using the `when` construct 
 on the sealed type.
 ```kotlin
-fun ctx(type: MyType): Unit {
-    when(type) {
-        is A -> println("A")
-        is B -> println("B.x=${type.x}, B.y=${type.y}")
-        is C -> println("C.z=${type.z}")
-    }
+fun ctx(type: MyType): Unit = when (type) {
+    is A -> println("A")
+    is B -> println("B.x=${type.x}, B.y=${type.y}")
+    is C -> println("C.z=${type.z}")
 }
 ```
 
